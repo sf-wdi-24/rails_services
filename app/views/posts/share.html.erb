@@ -1,0 +1,11 @@
+<h2>Share <%= @post.title %></h2>
+<hr>
+Love this post? Share it with your friends vis SMS messaging!
+<br><br>
+<%= form_for :share, url: share_post_path(@post) do |f| %>
+  <div class="form-group">
+    <%= f.label :numbers, "Phone Numbers" %>
+    <%= f.text_area :numbers, value: "555-555-5555, 666-666-6666, 904-314-9719", placeholder: "Separate phone numbers with commas, e.g. \"555-555-5555, 666-666-6666\"", class: "form-control", autofocus: true %>
+  </div>
+  <%= f.submit "Share Post", class: "btn btn-block btn-default" %>
+<% end %>

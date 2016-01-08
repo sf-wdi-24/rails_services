@@ -1,0 +1,8 @@
+<h1>All Posts</h1>
+<hr>
+<% @posts.each do |post| %>
+  <strong><%= post.title %></strong> 
+  <span class="small text-muted">(<%= post.comments.count %> <%= "comment".pluralize(post.comments.count) %>)</span> 
+  - <%= link_to "View Post", post_path(post) %>
+  <hr>
+<% end %>

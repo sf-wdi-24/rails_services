@@ -1,0 +1,7 @@
+<%= form_for [@post, @comment] do |f| %>
+  <div class="form-group">
+    <%= f.label :content %>
+    <%= f.text_area :content, placeholder: "Type your comment here", class: "form-control", autofocus: true %>
+  </div>
+  <%= f.submit "Save Comment", class: "btn btn-block btn-default" %>
+<% end %>

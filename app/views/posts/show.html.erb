@@ -1,0 +1,45 @@
+<h2><%= @post.title %></h2>
+<hr>
+<p><%= @post.content %></p>
+<p class="small text-muted">
+  Posted <%= time_ago_in_words(@post.created_at) %> ago by <%= link_to @post.user.email, user_path(@post.user) %>
+</p>
+<p class="small text-muted">
+  <%= @post.comments.count %> <%= "comment".pluralize(@post.comments.count) %>
+  &nbsp;&nbsp;
+  <%= link_to share_post_path(@post) do %>
+    <i class="fa fa-mobile"></i> Share
+  <% end %>
+</p>
+
+<% if current_user %>
+  <hr>
+  <p>
+    <%= link_to "+ Comment", new_post_comment_path(@post), class: "btn btn-default" %>
+    <!-- only let user who wrote the post see edit/delete buttons -->
+    <% if current_user == @post.user %>
+      <%= link_to "Edit Post", edit_post_path(@post), class: "btn btn-default" %>
+      <%= link_to "Delete Post", post_path(@post), method: :delete, class: "btn btn-default" %>
+    <% end %>
+  </p>
+<% end %>
+
+<% if @post.comments.any? %>
+  <br>
+  <h4>Comments</h4>
+  <hr>
+  <% @post.comments.each do |comment| %>
+    <p><%= comment.content %></p>
+    <p class="small text-muted">
+      Posted <%= time_ago_in_words(comment.created_at) %> ago by <%= link_to comment.user.email, user_path(comment.user) %>
+      <!-- only let user who wrote the comment see edit/delete links -->
+      <% if current_user == comment.user %>
+        &nbsp;&nbsp;
+        <%= link_to "Edit", edit_post_comment_path(@post, comment) %>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <%= link_to "Delete", post_comment_path(@post, comment), method: :delete %>
+      <% end %>
+    </p>
+    <hr>
+  <% end %>
+<% end %>

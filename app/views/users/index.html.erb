@@ -1,0 +1,8 @@
+<h1>All Users</h1>
+<hr>
+<% @users.each do |user| %>
+  <strong><%= user.email %></strong> 
+  <span class="small text-muted">(<%= user.posts.count %> <%= "post".pluralize(user.posts.count) %>, <%= user.comments.count %> <%= "comment".pluralize(user.comments.count) %>)</span> 
+  - <%= link_to "View Profile", user_path(user) %>
+  <hr>
+<% end %>
