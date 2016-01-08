@@ -28,34 +28,15 @@ class PostsController < ApplicationController
     if request.post?
       sms_body = "I think you would love this amazing blog post! Check it out here: #{request.protocol}#{request.host}#{post_path(@post)}."
       phone_numbers = share_params[:numbers].split(",")
-      success_numbers = []
-      error_numbers = []
 
-      phone_numbers.each do |num|
-        num.strip!
-        num.gsub!(/[^0-9]/, "")
-        num.prepend("+1")
+      sms_service = SmsService.new
+      sms_service.send_messages(phone_numbers, sms_body)
 
-        begin
-          sms_message = $twilio.messages.create(
-            from: ENV['TWILIO_FROM_NUMBER'],
-            to: num,
-            body: sms_body
-          )
-        rescue Twilio::REST::RequestError => error
-          error_numbers.push(num)
-          puts "SMS message not sent: #{error}"
-        else
-          success_numbers.push(num)
-          puts "SMS message sent to #{sms_message.to}: #{sms_message.body}"
-        end
+      if sms_service.success_numbers.any?
+        flash[:notice] = "Text #{'message'.pluralize(sms_service.success_numbers.count)} sent to #{sms_service.success_numbers.join(", ")}."
       end
-
-      if success_numbers.any?
-        flash[:notice] = "Text #{'message'.pluralize(success_numbers.count)} sent to #{success_numbers.join(", ")}."
-      end
-      if error_numbers.any?
-        flash[:error] = "Text #{'message'.pluralize(error_numbers.count)} could not send to #{error_numbers.join(", ")}."
+      if sms_service.error_numbers.any?
+        flash[:error] = "Text #{'message'.pluralize(sms_service.error_numbers.count)} could not send to #{sms_service.error_numbers.join(", ")}."
       end
 
       redirect_to post_path(@post)
