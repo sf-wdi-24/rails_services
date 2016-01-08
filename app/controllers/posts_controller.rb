@@ -44,7 +44,7 @@ class PostsController < ApplicationController
           )
         rescue Twilio::REST::RequestError => error
           error_numbers.push(num)
-          puts error
+          puts "SMS message not sent: #{error}"
         else
           success_numbers.push(num)
           puts "SMS message sent to #{sms_message.to}: #{sms_message.body}"
